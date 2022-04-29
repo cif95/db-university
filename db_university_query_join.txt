@@ -44,7 +44,7 @@
 		ON `students`.`degree_id` = `degrees`.`id`
 		JOIN `departments`
 		ON `departments`.`id` = `degrees`.`department_id`  
-		ORDER BY `student_surname` ASC;
+		ORDER BY `student_surname` ASC, `student_name`;
 
 
 5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti:
@@ -79,5 +79,18 @@
 
 
 
-7. BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami
+7. BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami:
 
+		SELECT ANY_VALUE(`students`.`name`) AS `student_name`,
+		ANY_VALUE(`students`.`surname`) AS `student_surname`,
+		ANY_VALUE(`courses`.`name`) AS `course_name`,
+		COUNT(`exam_id`) AS `all_exams`
+		FROM `students`
+		JOIN `exam_student`
+		ON `exam_student`.`student_id` = `students`.`id`
+		JOIN `exams`
+		ON `exams`.`id`= `exam_student`.`exam_id`
+		JOIN `courses`
+		ON `exams`.`course_id`= `courses`.`id`
+		GROUP BY `courses`.`name`, `students`.`registration_number`  
+		ORDER BY `student_surname` ASC, `student_name`;
